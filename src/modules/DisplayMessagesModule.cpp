@@ -8,6 +8,8 @@
 #include "modules/NeighborInfoModule.h"
 
 
+
+
 ProcessMessage DisplayMessagesModule::handleReceived(const meshtastic_MeshPacket &mp) {
     // TODO: handle appropriately...
     requestFocus();
@@ -16,6 +18,8 @@ ProcessMessage DisplayMessagesModule::handleReceived(const meshtastic_MeshPacket
 }
 
 bool DisplayMessagesModule::shouldDraw() { return shouldDisplay; }
+
+void DisplayMessagesModule::setFocus() { shouldDisplay = true; }
 
 
 void DisplayMessagesModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
@@ -28,6 +32,10 @@ void DisplayMessagesModule::setFocus() {
     shouldDisplay = true;
 }
 
+// TODO: when a new neighbor appears, add them here
+// TODO: when a new message is received, add it to the history.
+// TODO: cap history
+
 int DisplayMessagesModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_LEFT)) {
@@ -35,7 +43,8 @@ int DisplayMessagesModule::handleInputEvent(const InputEvent *event) {
             locationsDisplayModule->setFocus();
             return 0;
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_SELECT)) {
-            sendMessageModule->setFocus(target);
-        }
+            sendMessageModule->setFocus(targeNode);
+        } // TODO: up + down
+
     }
  }

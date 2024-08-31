@@ -17,7 +17,8 @@ class DisplayMessagesModule : public SinglePortModule, public Observable<const U
         int handleInputEvent(const InputEvent *event);
     private:
         bool shouldDisplay = false;
-        char[] target = "FakeUser";
+        NodeNum targetNode;
+        std::unordered_map<NodeNum, std::vector<char[]>> neighborHistory;
         // TODO: add a friend data base and a displayedIndex.
 }
 

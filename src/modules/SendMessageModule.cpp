@@ -19,12 +19,12 @@ void SendMessageModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *stat
     display->drawString(16, 16, "HelloWorld")
  }
 
-void SendMessageModule::setFocus(const char[] targetName) {
+void SendMessageModule::setFocus(NodeNum dest) {
     shouldDisplay = true;
-    displayString = targetName;
+    targetNode = dest;
 }
 
-void changeMessage(const bool up) {
+void SendMessageModule::changeMessage(const bool up) {
     if (up) {
         if (messageIndex == 0) { 
             messageIndex = maxMessageIndex; 
@@ -39,6 +39,19 @@ void changeMessage(const bool up) {
         }
     }
 }
+void SendMessageModule::sendText(NodeNum dest, ChannelIndex channel, const char *message)
+{
+    meshtastic_MeshPacket *p = allocDataPacket();
+    p->to = dest;
+    p->channel = channel;
+    p->want_ack = true;
+    p->decoded.payload.size = strlen(message);
+    memcpy(p->decoded.payload.bytes, message, p->decoded.payload.size);
+
+    service->sendToMesh(
+        p, RX_SRC_LOCAL,
+        true);
+}
 
 int SendMessageModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
@@ -49,8 +62,7 @@ int SendMessageModule::handleInputEvent(const InputEvent *event) {
             shouldDisplay = false;
             displayMessagesModule->setFocus();
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_SELECT)) {
-            // TODO: send message!!
-            sendMessage();
+            sendMessage(targetNode, targetChannel, precannedMessages[messageIndex]);
             shouldDisplay = false;
             locationsDisplayModule->setFocus();
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_UP)) {

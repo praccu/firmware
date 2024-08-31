@@ -6,7 +6,7 @@ class SendMessageModule : public SinglePortModule, public Observable<const UIFra
         public:
         SendMessageModule() : SinglePortModule("send_message_module", meshtastic_PortNum_TEXT_MESSAGE_APP) {}
         bool shouldDraw();
-        void setFocus();
+        void setFocus(NodeNum dest);
         CallbackObserver<SendMessageModule, const InputEvent *> inputObserver =
             CallbackObserver<SendMessageModule, const InputEvent *>(this, &SendMessageModule::handleInputEvent);
     protected:
@@ -21,6 +21,7 @@ class SendMessageModule : public SinglePortModule, public Observable<const UIFra
         const targetChannel = 0; // TODO!!!! What?
         char[][] precannedMessages = {"Message0", "Message1", "Message2"};
         uint8_t maxMessageIndex = precannedMessages.size() - 1;
+        NodeNum targetNode;
 };
 
 extern SendMessageModule *sendMessageModule;
