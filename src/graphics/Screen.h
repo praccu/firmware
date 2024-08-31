@@ -179,6 +179,8 @@ class Screen : public concurrency::OSThread
     CallbackObserver<Screen, const meshtastic_AdminMessage *> adminMessageObserver =
         CallbackObserver<Screen, const meshtastic_AdminMessage *>(this, &Screen::handleAdminMessage);
 
+    CallbackObserver<Screen, const LocationDisplayModule *>(this, &Screen::handleLocationUpdate);
+
   public:
     explicit Screen(ScanI2C::DeviceAddress, meshtastic_Config_DisplayConfig_OledType, OLEDDISPLAY_GEOMETRY);
 

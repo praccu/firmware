@@ -13,6 +13,7 @@ class DisplayMessagesModule : public SinglePortModule, public Observable<const U
         int handleInputEvent(const InputEvent *event);
     private:
         bool shouldDisplay = true;
+        // TODO: add a friend data base and a displayedIndex.
 }
 
 extern DisplayMessagesModule *displaymessageModule;

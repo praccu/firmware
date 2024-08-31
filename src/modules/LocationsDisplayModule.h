@@ -2,35 +2,27 @@
 #include "ProtobufModule.h"
 #include "input/InputBroker.h"
 
-// TODO:
-//  --> rewrite "PositionModule" to save state + display, scrap this. Or no,  just crib from it.
-//  --> get location data aggregated
-//  --> get messages
-//  --> call request focus
-//  --> write "draw frame"
-//  --> handle input (add a new input module)
-//  --> pass off to message display UI
-//  --> prevent defaults from displaying
-//  --> notification
+// TODO LocationDisplayModule:
+// --> draws a half-compass.
+// --> draws friends' locations on the half-compass.
+// --> holds a database of users and their positions.
+// --> holds real heading from compass.
 
-// message display UI TODOs:
-// --> start the class
-// --> display the last message + the location
-// --> add an input broker
-// --> scroll message support
-// --> scroll users support
-// --> transition back to compass or to send message
-// --> write draw frame
+// TODO DiplayMessagesModule:
+// --> holds a list of neighbors and message histories
+// --> displays focused neighbor
+// --> allows scrolling Left+Right through history
+// --> "Select" transitions to SendMessageModule to focused user
+// --> left returns to compass display at latest message??
+// --> Up+Down scrolling through users.
 
-// send messsage UI TODOs:
-// --> start the class
-// --> hold a list
-// --> add an input broker
-// --> scroll messages
-// --> send messages
-// --> cancel (back to other module)
 
-// Simple: Compass display with fake data. Then view messages with fake data. Then send messages with fake data.
+// TODO SendMessageModule:
+// --> Up+Down scroll through message options
+// --> Select sends and then back to location display
+// --> left goes back to friend list
+// --> right goes back to compass
+
 class LocationsDisplayModule : public SinglePortModule, public Observable<const UIFrameEvent *>, private concurrency::OSThread {
     CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
         CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);
@@ -45,7 +37,7 @@ class LocationsDisplayModule : public SinglePortModule, public Observable<const 
         void drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y);
         int handleInputEvent(const InputEvent *event);
     private:
-    bool shouldDisplay = true;
+        bool shouldDisplay = true;
 };
 
 extern LocationsDisplayModule *locationsDisplayModule;

@@ -25,8 +25,6 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
  }
 
 int LocationsDisplayModule::handleInputEvent(const InputEvent *event) {
-    // TODO: if the event is right, go to the message display screen
-    // TODO: add a new input handler, given it Special input event types.
     if (shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) {
             shouldDisplay = false;

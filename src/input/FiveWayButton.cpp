@@ -15,8 +15,6 @@ FiveWayButton::FiveWayButton() : concurrency::OSThread(inputSourceName) {
 }
 
 int32_t FiveWayButton::runOnce() {
-    // TODO: convert to action
-    // TODO: condition action on screen? Or just let the screens pick it up.
 
     // Consider normally high vs normally low...
     if (digitalRead(LEFT_PIN) == HIGH) {
