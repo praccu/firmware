@@ -24,12 +24,14 @@
 // --> right goes back to compass
 
 class LocationsDisplayModule : public SinglePortModule, public Observable<const UIFrameEvent *>, private concurrency::OSThread {
-    CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
-        CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);
+   
 
     public:
         LocationsDisplayModule() : SinglePortModule("locations_display_module", meshtastic_PortNum_TEXT_MESSAGE_APP) {}
-            bool shouldDraw();
+        bool shouldDraw();
+        void setFocus();
+        CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
+            CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);
     protected:
         virtual bool wantUIFrame() override { return this->shouldDraw(); }
         virtual ProcessMessage handleReceived(const meshtastic_MeshPacket &mp) override;

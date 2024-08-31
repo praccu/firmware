@@ -24,6 +24,10 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
     display->drawString(16, 16, "HelloWorld")
  }
 
+void LocationsDisplayModule::setFocus() {
+    shouldDisplay = true;
+}
+
 int LocationsDisplayModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) {
