@@ -2698,6 +2698,7 @@ int Screen::handleUIFrameEvent(const UIFrameEvent *event)
 
 int Screen::handleInputEvent(const InputEvent *event)
 {
+    if (event->source == "FiveWayButton") { return 0; }
 
 #ifdef T_WATCH_S3
     // For the T-Watch, intercept touches to the 'toggle digital/analog watch face' button
