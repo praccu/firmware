@@ -9,8 +9,8 @@
 // --> holds real heading from compass.
 
 // TODO DiplayMessagesModule:
-// --> holds a list of neighbors and message histories
-// --> displays focused neighbor info
+// --> store timestamps
+// --> implement a ring buffer?
 
 
 // TODO SendMessageModule:

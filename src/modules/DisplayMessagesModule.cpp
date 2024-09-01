@@ -7,18 +7,33 @@
 #include "main.h"
 #include "modules/NeighborInfoModule.h"
 
-
+#define MAX_MESSAGES 12
 
 
 ProcessMessage DisplayMessagesModule::handleReceived(const meshtastic_MeshPacket &mp) {
-
-    e.action = UIFrameEvent::Action::REGENERATE_FRAMESET;
-    return ProcessMessage::CONTINUE;
+    // TODO: handle timestamping.
+    char dmmTempBuf[mp.decoded.payload.bytes.size()];
+    snprintf(tempBuf, sizeof(tempBuf), "%s", mp.decoded.payload.bytes);
+    const meshtastic_NodeInfoLite *node = nodeDB->getMeshNode(getFrom(&mp));
+    const NodeNum nodeNum = node->num;
+    for (std::pair<NodeNum, std::vector<char[]>> &neighbor : neighborHistory) {
+        if (neighbor.first == nodeNum) {
+            if (neighbor.second.size() == MAX_MESSAGES) {
+                neighbor.second.pop_back()
+            }
+            // TODO: shuffling a pointer vector every insert isn't cheap...
+            // Home brew a ring buffer?
+            neighbor.second.insert(neighbor.second.begin(), std::move(dmmTempBuf));
+            break;
+        }
+    }
 }
 
 int DisplayeMessagesModule::handleStatusUpdate(const meshtastic::Status *arg) {
-    // TODO: figure out how to update our message history object cleanly...
-    // TODO: also fix the history and neighbor indexes as needed...
+    if (arg->getNumTotal() != neighborHistory.size()) {
+        neighborHistory[nodeDB->meshNodes->back().num] = std::move(new std::vector());
+    }
+    return 0;
 }
 
 bool DisplayMessagesModule::shouldDraw() { return shouldDisplay; }
@@ -38,10 +53,6 @@ void DisplayMessagesModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *
 void DisplayMessagesModule::setFocus() {
     shouldDisplay = true;
 }
-
-// TODO: when a new neighbor appears, add them here
-// TODO: when a new message is received, add it to the history.
-// TODO: cap history
 
 int DisplayMessagesModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
