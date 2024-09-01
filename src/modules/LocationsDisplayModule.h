@@ -11,6 +11,7 @@
 // TODO DiplayMessagesModule:
 // --> store timestamps
 // --> implement a ring buffer?
+// --> ask for new render when message comes in?
 
 
 // TODO SendMessageModule:
