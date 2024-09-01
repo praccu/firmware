@@ -9,6 +9,10 @@
 
 #define MAX_MESSAGES 12
 
+bool DisplayMessagesModule::wantPacket(const meshtastic_MeshPacket *p)
+{
+    return MeshService::isTextPayload(p);
+}
 
 ProcessMessage DisplayMessagesModule::handleReceived(const meshtastic_MeshPacket &mp) {
     // TODO: handle timestamping.

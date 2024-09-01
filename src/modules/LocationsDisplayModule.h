@@ -25,6 +25,7 @@ class LocationsDisplayModule : public SinglePortModule, public Observable<const 
         LocationsDisplayModule() : SinglePortModule("locations_display_module", meshtastic_PortNum_TEXT_MESSAGE_APP) {}
         bool shouldDraw();
         void setFocus();
+        void updatePosition(NodeNum nodeNum);
         CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
             CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);
     protected:
