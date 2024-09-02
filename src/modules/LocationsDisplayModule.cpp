@@ -8,17 +8,10 @@
 
 LocationsDisplayModule *locationsDisplayModule;
 
-ProcessMessage LocationsDisplayModule::handleReceived(const meshtastic_MeshPacket &mp) {
-    // TODO: figure out how to handle location data
-    requestFocus();
-    e.action = UIFrameEvent::Action::REGENERATE_FRAMESET;
-    return ProcessMessage::CONTINUE;
-}
-
 int DisplayeMessagesModule::handleStatusUpdate(const meshtastic::Status *arg) {
     if (arg->getNumTotal() != neighborHistory.size()) {
         // TODO: rewrite for this module
-        neighborHistory[nodeDB->meshNodes->back().num] = std::move(new std::vector());
+       this->neighborHistory[nodeDB->meshNodes->back().num] = std::move(new std::vector());
     }
     return 0;
 }
@@ -34,29 +27,55 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
 {
     // TODO: half compass with friend locations as letters?
     // List of friend distances
-    display->drawString(16, 16, "HelloWorld")
+    display->drawString(16, 16, "HelloWorld");
 
-    // For Each node in DB
-    // Get the relative location
-    
-    // Then, get the current heading per the compass (new module...)
-    // Then, do the math to actually put these on the compass
+    uint32_t now = getTime();
+
+    Point baring(-0.04f, 0.65f); // TODO: proper values
+
+    const auto& myNode = nodeDB->getMeshNode(nodeDB->getNodeNum());
+    const auto& myPosition = myNode->position;
+    const auto& myBearing = compassModule->getMyBearing();
+
+    for (const meshtastic_NodeInfoLite& node : nodeDB->meshNodes) {
+        if ((int)(now-node.last_heard) < 120) {
+
+            // Calculates the bearing to friend, and then makes it relative to my bearing
+            const float bearingToFriend = GeoCoord::bearing(
+                DegD(myPosition.latitude_i), DegD(myPosition.longitude_i), 
+                DegD(node.position.latitude_i), DegD(node.position.longitude_i)
+                ) - myBearing;
+
+            // TODO: rotate the bearing point based on bearingToFriend.
+            // TODO: draw a friend rep at that point.
+        }
+    }
+
+
     // Consider the difficult of displaying timestamps...
+    // Consider how to add a notification if a new message has arrived.
 
-    // Proposed plan: pre-compute 31 vectors, and selectively write them as activated
-    // Proposed plan: only display the end, then put a count or name below them?
-    // Curiosity: how to select the right vector? Get heading, then pick the closest
  }
 
 void LocationsDisplayModule::setFocus() {
-    shouldDisplay = true;
+    this->shouldDisplay = true;
 }
 
 int LocationsDisplayModule::handleInputEvent(const InputEvent *event) {
-    if (shouldDisplay) {
+    if (this->shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) {
-            shouldDisplay = false;
+            this->shouldDisplay = false;
             displayMessagesModule->setFocus();
         }
     }
+ }
+
+ int32_t LocationsDisplayModule::runOnce() {
+    if (this->shouldDisplay) {
+        this->requestFocus();
+        UIFrameEvent e;
+        e.action = UIFrameEvent::Action::REGENERATE_FRAMESET;
+        this->notifyObservers(&e);
+    }
+    return 300;
  }
