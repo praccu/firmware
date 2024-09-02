@@ -6,6 +6,11 @@
 #include "modules/NeighborInfoModule.h"
 #include "modules/DisplayMessagesModule.h"
 
+#define FRIEND_LIVENESS_TIME 120
+// TODO: proper values.
+#define START_X -0.04f
+#define START_Y 0.65f
+
 LocationsDisplayModule *locationsDisplayModule;
 
 int DisplayeMessagesModule::handleStatusUpdate(const meshtastic::Status *arg) {
@@ -31,28 +36,37 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
 
     uint32_t now = getTime();
 
-    Point baring(-0.04f, 0.65f); // TODO: proper values
+    Point bearing(START_X, START_Y);
 
     const auto& myNode = nodeDB->getMeshNode(nodeDB->getNodeNum());
     const auto& myPosition = myNode->position;
     const auto& myBearing = compassModule->getMyBearing();
 
     for (const meshtastic_NodeInfoLite& node : nodeDB->meshNodes) {
-        if ((int)(now-node.last_heard) < 120) {
-
-            // Calculates the bearing to friend, and then makes it relative to my bearing
-            const float bearingToFriend = GeoCoord::bearing(
+        // For friends seen recently
+        if ((int)(now-node.last_heard) < FRIEND_LIVENESS_TIME) {
+            float bearingToFriend = GeoCoord::bearing(
                 DegD(myPosition.latitude_i), DegD(myPosition.longitude_i), 
                 DegD(node.position.latitude_i), DegD(node.position.longitude_i)
-                ) - myBearing;
+                );
 
-            // TODO: rotate the bearing point based on bearingToFriend.
-            // TODO: draw a friend rep at that point.
+            bearingToFriend -= myBearing
+
+            // Find the appropriate point on the half compass
+            bearing.rotate(-bearingToFriend);
+            bearing.scale(compassDiam);
+            bearing.translate(compassX, compassY);
+
+            // Draw the first character of the friend's name.
+            display->drawString(bearing.x, bearing.y, string(node.user.short_name[0]));
+            
+            // Reset the bearin for the next loop.
+            bearing.x = START_X;
+            bearing.y = START_Y;
         }
     }
 
 
-    // Consider the difficult of displaying timestamps...
     // Consider how to add a notification if a new message has arrived.
 
  }
