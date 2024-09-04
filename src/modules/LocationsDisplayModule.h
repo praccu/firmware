@@ -3,10 +3,7 @@
 #include "input/InputBroker.h"
 
 // TODO LocationDisplayModule:
-// --> draws a half-compass.
-// --> draws friends' locations on the half-compass.
-// --> holds a database of users and their positions.
-// --> holds real heading from compass.
+// --> ?? test??
 
 // TODO DiplayMessagesModule:
 // --> store timestamps
@@ -17,10 +14,6 @@
 // TODO SendMessageModule:
 // --> ?? test?
 
-// TODO CompassModule:
-// --> skeleton
-// --> pull in the compass chip library
-// --> design this
 class LocationsDisplayModule : public Observable<const UIFrameEvent *>, private concurrency::OSThread {
    
 
