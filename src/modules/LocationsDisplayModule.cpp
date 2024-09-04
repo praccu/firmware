@@ -5,6 +5,7 @@
 #include "main.h"
 #include "modules/NeighborInfoModule.h"
 #include "modules/DisplayMessagesModule.h"
+#include "modules/CompassModule.h"
 
 #define FRIEND_LIVENESS_TIME 120
 // TODO: proper values.
