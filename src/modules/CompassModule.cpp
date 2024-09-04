@@ -22,7 +22,7 @@ float CompassModule::getBearing() {
 }
 
 int32_t CompassModule::runOnce() {
-  icm.getEvent(this->accel, this->gyro, this->temp, this->mag);
+  icm.getEvent(&this->accel, &this->gyro, &this->temp, &this->mag);
   return 100;
 }
 
