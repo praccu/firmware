@@ -1,6 +1,7 @@
 #include "SendMessageModule.h"
 
 #include "graphics/Screen.h"
+#include "modules/LocationsDisplayModule.h"
 #include "main.h"
 
 SendMessageModule *sendMessageModule;
@@ -16,7 +17,7 @@ bool SendMessageModule::shouldDraw() { return shouldDisplay; }
 
 void SendMessageModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
 {
-    display->drawString(16, 16, "HelloWorld")
+    display->drawString(16, 16, "HelloWorld");
  }
 
 void SendMessageModule::setFocus(NodeNum dest) {
@@ -26,16 +27,16 @@ void SendMessageModule::setFocus(NodeNum dest) {
 
 void SendMessageModule::changeMessage(const bool up) {
     if (up) {
-        if (messageIndex == 0) { 
-            messageIndex = maxMessageIndex; 
+        if (this->messageIndex == 0) { 
+            this->messageIndex = this->maxMessageIndex; 
         } else {
-            messageIndex--;
+            this->messageIndex--;
         }
     } else {
-        if (messageIndex == maxMessageIndex) {
-            messageIndex = 0;
+        if (this->messageIndex == this->maxMessageIndex) {
+            this->messageIndex = 0;
         } else {
-            messageIndex++;
+            this->messageIndex++;
         }
     }
 }

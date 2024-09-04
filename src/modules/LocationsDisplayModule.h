@@ -20,7 +20,7 @@ class LocationsDisplayModule : public Observable<const UIFrameEvent *>, private 
     public:
         LocationsDisplayModule()  {}
         bool shouldDraw();
-        void setFocus();
+        void requestFocus();
         void updatePosition(NodeNum nodeNum);
         CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
             CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);

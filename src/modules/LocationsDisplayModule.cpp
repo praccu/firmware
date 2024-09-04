@@ -41,9 +41,9 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
 
     const auto& myNode = nodeDB->getMeshNode(nodeDB->getNodeNum());
     const auto& myPosition = myNode->position;
-    const auto& myBearing = compassModule->getMyBearing();
+    const auto& myBearing = compassModule->getBearing();
 
-    for (const meshtastic_NodeInfoLite& node : nodeDB->meshNodes) {
+    for (const meshtastic_NodeInfoLite& node : *(nodeDB->meshNodes)) {
         // For friends seen recently
         if ((int)(now-node.last_heard) < FRIEND_LIVENESS_TIME) {
             float bearingToFriend = GeoCoord::bearing(
@@ -72,7 +72,7 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
 
  }
 
-void LocationsDisplayModule::setFocus() {
+void LocationsDisplayModule::requestFocus() {
     this->shouldDisplay = true;
 }
 

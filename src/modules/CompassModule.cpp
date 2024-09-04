@@ -9,16 +9,18 @@ Adafruit_ICM20948 icm;
 #define ICM_SCK 13
 #define ICM_MISO 12
 #define ICM_MOSI 11
+#define BOSTON_DECLINATION 8.25
 
 CompassModule *compassModule;
 
 float CompassModule::getBearing() {
-    return MadgwickQuaternionUpdate(
+    MadgwickQuaternionUpdate(
         this->accel.acceleration.x, this->accel.acceleration.z, this->accel.acceleration.z,
         this->gyro.gyro.x, this->gyro.gyro.z, this->gyro.gyro.z,
         this->mag.magnetic.x, this->mag.magnetic.z, this->mag.magnetic.z,
         0.1f
-    )
+    );
+    return (getAHRSHeading() * RAD_TO_DEG) - BOSTON_DECLINATION;
 }
 
 int32_t CompassModule::runOnce() {

@@ -19,6 +19,7 @@ class FiveWayButton : public Observable<const InputEvent *>, public concurrency:
         NO_PRESS = meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_NONE
     } KeyType;
 
-}
+    void sendKey(KeyType key);
+};
 
 extern FiveWayButton *fiveWayButton;

@@ -231,4 +231,9 @@ void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, fl
   q[3] = q4 * norm;
 }
 
-const float * getQ () { return q; }
+const float getAHRSHeading() { 
+
+  return atan2(2.0f * (q[1] * q[2] + q[0] *q[3]), q[0] * q[0] + q[1]
+                    * q[1] - q[2] * q[2] - q[3]
+                    * q[3]);
+ }

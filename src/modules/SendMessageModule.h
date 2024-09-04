@@ -2,9 +2,9 @@
 #include "ProtobufModule.h"
 #include "input/InputBroker.h"
 
-class SendMessageModule : public SinglePortModule, public Observable<const UIFrameEvent *>, private concurrency::OSThread {
+class SendMessageModule : public SinglePortModule, Observable<const UIFrameEvent *>, private concurrency::OSThread {
         public:
-        SendMessageModule() : SinglePortModule("send_message_module", meshtastic_PortNum_TEXT_MESSAGE_APP) {}
+        SendMessageModule() : SinglePortModule("send_message_module", meshtastic_PortNum_TEXT_MESSAGE_APP), OSThread("send_message_module") {}
         bool shouldDraw();
         void setFocus(NodeNum dest);
         CallbackObserver<SendMessageModule, const InputEvent *> inputObserver =
@@ -16,6 +16,7 @@ class SendMessageModule : public SinglePortModule, public Observable<const UIFra
         void drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y);
         int handleInputEvent(const InputEvent *event);
     private:
+        void sendText(NodeNum dest, ChannelIndex channel, const char *message);
         bool shouldDisplay = false;
         uint8_t messageIndex = 0;
         const targetChannel = 0; // TODO!!!! What?
