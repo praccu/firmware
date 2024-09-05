@@ -1,13 +1,17 @@
 #include "DisplayMessagesModule.h"
 
 #include "LocationsDisplayModule.h"
+#include "SendMessageModule.h"
 #include "NodeDB.h"
 #include "gps/RTC.h"
 #include "graphics/Screen.h"
 #include "main.h"
 #include "modules/NeighborInfoModule.h"
+#include "MeshService.h"
+#include <utility>
 
 #define MAX_MESSAGES 12
+#define DMM_BUFFER_SIZE 237
 
 bool DisplayMessagesModule::wantPacket(const meshtastic_MeshPacket *p)
 {
@@ -16,26 +20,32 @@ bool DisplayMessagesModule::wantPacket(const meshtastic_MeshPacket *p)
 
 ProcessMessage DisplayMessagesModule::handleReceived(const meshtastic_MeshPacket &mp) {
     // TODO: handle timestamping.
-    char dmmTempBuf[mp.decoded.payload.bytes.size()];
-    snprintf(tempBuf, sizeof(tempBuf), "%s", mp.decoded.payload.bytes);
+    char dmmTempBuf[DMM_BUFFER_SIZE];
+    snprintf(dmmTempBuf, DMM_BUFFER_SIZE, "%s", mp.decoded.payload.bytes);
     const meshtastic_NodeInfoLite *node = nodeDB->getMeshNode(getFrom(&mp));
     const NodeNum nodeNum = node->num;
-    for (std::pair<NodeNum, std::vector<char[]>> &neighbor : neighborHistory) {
+    for (std::pair<NodeNum, std::vector<String>>& neighbor : neighborHistory) {
         if (neighbor.first == nodeNum) {
             if (neighbor.second.size() == MAX_MESSAGES) {
-                neighbor.second.pop_back()
+                neighbor.second.pop_back();
             }
             // TODO: shuffling a pointer vector every insert isn't cheap...
             // Home brew a ring buffer?
-            neighbor.second.insert(neighbor.second.begin(), std::move(dmmTempBuf));
+            neighbor.second.insert(neighbor.second.begin(), dmmTempBuf);
             break;
         }
     }
 }
 
-int DisplayeMessagesModule::handleStatusUpdate(const meshtastic::Status *arg) {
-    if (arg->getNumTotal() != neighborHistory.size()) {
-        neighborHistory[nodeDB->meshNodes->back().num] = std::move(new std::vector());
+int DisplayMessagesModule::handleStatusUpdate(const meshtastic::Status *arg) {
+    if (arg->getStatusType() == STATUS_TYPE_NODE && nodeDB->getNumMeshNodes() != this->neighborHistory.size()) {
+        std::vector<String> emptyMessages;
+        neighborHistory.push_back(
+            std::make_pair(
+                nodeDB->meshNodes->back().num, 
+                std::move(emptyMessages)
+                )
+            );
     }
     return 0;
 }
@@ -54,21 +64,17 @@ void DisplayMessagesModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *
     }
  }
 
-void DisplayMessagesModule::setFocus() {
-    shouldDisplay = true;
-}
-
 int DisplayMessagesModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_LEFT)) {
             if (historyIndex == 0) {
                 shouldDisplay = false;
-                locationsDisplayModule->setFocus();
+                locationsDisplayModule->requestFocus();
             } else {
                 historyIndex++;
             }
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) { 
-            if (historyIndex < neighborHistory[displayedNeighborIndex].size() - 1) {
+            if (historyIndex < neighborHistory[displayedNeighborIndex].second.size() - 1) {
                 historyIndex++;
             }
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_SELECT)) {

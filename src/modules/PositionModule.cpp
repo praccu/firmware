@@ -16,6 +16,7 @@
 #include "sleep.h"
 #include "target_specific.h"
 #include "LocationsDisplayModule.h"
+#include "modules/LocationsDisplayModule.h"
 
 extern "C" {
 #include <Throttle.h>
@@ -94,8 +95,6 @@ bool PositionModule::handleReceivedProtobuf(const meshtastic_MeshPacket &mp, mes
         // Set from phone RTC Quality to RTCQualityNTP since it should be approximately so
         trySetRtc(p, isLocal, force);
     }
-
-    locationDisplayModule->updatePosition(getFrom(&mp));
 
     nodeDB->updatePosition(getFrom(&mp), p);
     if (channels.getByIndex(mp.channel).settings.has_module_settings) {

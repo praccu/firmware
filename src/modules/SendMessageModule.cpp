@@ -3,14 +3,11 @@
 #include "graphics/Screen.h"
 #include "modules/LocationsDisplayModule.h"
 #include "main.h"
+#include "modules/DisplayMessagesModule.h"
+#include "MeshService.h"
 
 SendMessageModule *sendMessageModule;
 
-ProcessMessage SendMessageModule::handleReceived(const meshtastic_MeshPacket &mp) {
-    requestFocus();
-    e.action = UIFrameEvent::Action::REGENERATE_FRAMESET;
-    return ProcessMessage::CONTINUE;
-}
 
 bool SendMessageModule::shouldDraw() { return shouldDisplay; }
 
@@ -40,14 +37,14 @@ void SendMessageModule::changeMessage(const bool up) {
         }
     }
 }
-void SendMessageModule::sendText(NodeNum dest, ChannelIndex channel, const char *message)
+void SendMessageModule::sendText(NodeNum dest, ChannelIndex channel, const String* message)
 {
     meshtastic_MeshPacket *p = allocDataPacket();
     p->to = dest;
     p->channel = channel;
     p->want_ack = true;
-    p->decoded.payload.size = strlen(message);
-    memcpy(p->decoded.payload.bytes, message, p->decoded.payload.size);
+    p->decoded.payload.size = strlen(message->c_str());
+    memcpy(p->decoded.payload.bytes, message->c_str(), p->decoded.payload.size);
 
     service->sendToMesh(
         p, RX_SRC_LOCAL,
@@ -58,16 +55,16 @@ int SendMessageModule::handleInputEvent(const InputEvent *event) {
     if (shouldDisplay) {
         if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) {
             shouldDisplay = false;
-            locationsDisplayModule->setFocus();
+            locationsDisplayModule->requestFocus();
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_RIGHT)) {
             shouldDisplay = false;
             displayMessagesModule->setFocus();
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_SELECT)) {
-            sendMessage(targetNode, targetChannel, precannedMessages[messageIndex]);
+            sendText(targetNode, this->targetChannel, &this->precannedMessages[messageIndex]);
             shouldDisplay = false;
-            locationsDisplayModule->setFocus();
+            locationsDisplayModule->requestFocus();
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_UP)) {
-            changeMessage(true);
+            this->changeMessage(true);
         } else if (event->inputEvent == static_cast<char>(meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_DOWN)) {
             changeMessage(false);
         }

@@ -18,15 +18,13 @@ class LocationsDisplayModule : public Observable<const UIFrameEvent *>, private 
    
 
     public:
-        LocationsDisplayModule()  {}
+        LocationsDisplayModule() : concurrency::OSThread("location_display_module")  {}
         bool shouldDraw();
         void requestFocus();
-        void updatePosition(NodeNum nodeNum);
         CallbackObserver<LocationsDisplayModule, const InputEvent *> inputObserver =
             CallbackObserver<LocationsDisplayModule, const InputEvent *>(this, &LocationsDisplayModule::handleInputEvent);
+        int handleStatusUpdate(const meshtastic::Status *arg);
     protected:
-        virtual bool wantUIFrame() override { return this->shouldDraw(); }
-
         void drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y);
         int handleInputEvent(const InputEvent *event);
         virtual int32_t runOnce() override;

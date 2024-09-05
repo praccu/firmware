@@ -2,6 +2,8 @@
 #include "ProtobufModule.h"
 #include "input/InputBroker.h"
 
+#include <string>
+
 class SendMessageModule : public SinglePortModule, Observable<const UIFrameEvent *>, private concurrency::OSThread {
         public:
         SendMessageModule() : SinglePortModule("send_message_module", meshtastic_PortNum_TEXT_MESSAGE_APP), OSThread("send_message_module") {}
@@ -16,13 +18,14 @@ class SendMessageModule : public SinglePortModule, Observable<const UIFrameEvent
         void drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y);
         int handleInputEvent(const InputEvent *event);
     private:
-        void sendText(NodeNum dest, ChannelIndex channel, const char *message);
+        void changeMessage(const bool up);
+        void sendText(NodeNum dest, ChannelIndex channel, const String* message);
         bool shouldDisplay = false;
         uint8_t messageIndex = 0;
-        const targetChannel = 0; // TODO!!!! What?
-        char[][] precannedMessages = {"Message0", "Message1", "Message2"};
-        uint8_t maxMessageIndex = precannedMessages.size() - 1;
+        const int targetChannel = 0; // TODO!!!! What?
+        uint8_t maxMessageIndex = 2;
         NodeNum targetNode;
+        std::vector<String> precannedMessages = {"Message0", "Message1", "Message2"};
 };
 
 extern SendMessageModule *sendMessageModule;
