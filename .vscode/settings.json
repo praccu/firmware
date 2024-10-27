@@ -89,5 +89,6 @@
     "mutex": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp"
-  }
+  },
+  "idf.portWin": "COM5"
 }

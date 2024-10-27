@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PYTHON=${PYTHON:-$(which python3 python | head -n 1)}
+PYTHON=c:\Users\Paul\Documents\GitHub\firmware\.venv\Scripts\python.exe
 
 set -e
 

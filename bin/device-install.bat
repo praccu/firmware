@@ -1,6 +1,6 @@
 @ECHO OFF
 
-set PYTHON=python
+set PYTHON=c:\Users\Paul\Documents\GitHub\firmware\.venv\Scripts\python.exe
 
 goto GETOPTS
 :HELP

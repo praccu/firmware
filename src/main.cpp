@@ -21,6 +21,7 @@
 #include "concurrency/OSThread.h"
 #include "concurrency/Periodic.h"
 #include "detect/ScanI2C.h"
+#include "modules/CompassModule.h"
 
 #if !MESHTASTIC_EXCLUDE_I2C
 #include "detect/ScanI2CTwoWire.h"
@@ -265,6 +266,7 @@ void setup()
     perhapsSetRTC(RTCQualityNTP, &tv);
 #endif
     powerMonInit();
+    compassInit();
 
     serialSinceMsec = millis();
 

@@ -1,12 +1,12 @@
 #include "FiveWayButton.h"
 
 #define POLL_INTERVAL 250
-// TODO: get the correct pins!!!
+// TODO: re-order correctly...
 #define LEFT_PIN 1
-#define RIGHT_PIN 3
-#define UP_PIN 5
-#define DOWN_PIN 7
-#define PUSH_PIN 9
+#define RIGHT_PIN 2
+#define UP_PIN 3
+#define DOWN_PIN 19
+#define PUSH_PIN 20
 
 static const char inputSourceName[] = "FiveWayButton"; // should match "allow input source" string
 

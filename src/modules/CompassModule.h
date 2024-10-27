@@ -19,4 +19,7 @@ class CompassModule : concurrency::OSThread {
         sensors_event_t temp;
  };
 
- extern CompassModule *compassModule;
+
+void compassInit();
+
+extern CompassModule *compassModule;

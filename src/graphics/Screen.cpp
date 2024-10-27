@@ -49,6 +49,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "modules/TextMessageModule.h"
 #include "sleep.h"
 #include "target_specific.h"
+#include "modules/CompassModule.h"
+#include "modules/LocationsDisplayModule.h"
 
 #if HAS_WIFI && !defined(ARCH_PORTDUINO)
 #include "mesh/wifi/WiFiAPClient.h"
@@ -2359,6 +2361,8 @@ void Screen::setFastFramerate()
 
 void DebugInfo::drawFrame(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
 {
+    locationsDisplayModule->drawFrame(display, state, x, y);
+    return;
     display->setFont(FONT_SMALL);
 
     // The coordinates define the left starting point of the text
