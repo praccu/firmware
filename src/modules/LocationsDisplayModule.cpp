@@ -39,6 +39,9 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
     if (compassModule == NULL) { display->drawString(16,16, "No compass"); return;}
     const auto& myBearing = compassModule->getBearing();
     float myFakeBearing = 0.0;
+    display->clear();
+    display->drawString(4, 4, String(myBearing));
+    return;
 
 
     if (nodeDB->meshNodes == NULL) {
@@ -53,8 +56,8 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
     meshtastic_NodeInfoLite fakeNode2;
     fakeNode2.num = myNode->num + 2;
     fakeNode2.last_heard = now;
-    fakeNode2.position.latitude_i = myPosition.latitude_i - 0.1;
-    fakeNode2.position.longitude_i = myPosition.longitude_i - 0.1;
+    fakeNode2.position.latitude_i = fakeNode.position.latitude_i - 1000001000;
+    fakeNode2.position.longitude_i = fakeNode.position.longitude_i - 100100000;
 
     meshtastic_NodeInfoLite fakeNodes[] = {fakeNode, fakeNode2};
     char name = 'a';
