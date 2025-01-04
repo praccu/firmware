@@ -10,6 +10,10 @@ class CompassModule : concurrency::OSThread {
     public:
         CompassModule();
         float getBearing();
+        sensors_event_t getAccel();
+        sensors_event_t getGyro();
+        sensors_event_t getMag();
+        bool icmOk = false;
     protected:
         virtual int32_t runOnce() override;
     private:

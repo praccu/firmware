@@ -40,8 +40,6 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
     const auto& myBearing = compassModule->getBearing();
     float myFakeBearing = 0.0;
     display->clear();
-    display->drawString(4, 4, String(myBearing));
-    return;
 
 
     if (nodeDB->meshNodes == NULL) {

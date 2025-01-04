@@ -164,7 +164,7 @@ static void drawIconScreen(const char *upperMsg, OLEDDisplay *display, OLEDDispl
 #ifdef SPLASH_TITLE_USERPREFS
     const char *title = SPLASH_TITLE_USERPREFS;
 #else
-    const char *title = "meshtastic.org";
+    const char *title = "praccu.com";
 #endif
     display->drawString(x + getStringCenteredX(title), y + SCREEN_HEIGHT - FONT_HEIGHT_MEDIUM, title);
     display->setFont(FONT_SMALL);
@@ -267,7 +267,7 @@ static void drawWelcomeScreen(OLEDDisplay *display, OLEDDisplayUiState *state, i
 {
     display->setFont(FONT_SMALL);
     display->setTextAlignment(TEXT_ALIGN_CENTER);
-    display->drawString(64 + x, y, "//\\ E S H T /\\ S T / C");
+    display->drawString(64 + x, y, "P /\\ U L T /\\ S T / C");
     display->drawString(64 + x, y + FONT_HEIGHT_SMALL, getDeviceName());
     display->setTextAlignment(TEXT_ALIGN_LEFT);
 
@@ -1838,6 +1838,9 @@ int32_t Screen::runOnce()
         setWelcomeFrames();
     }
 #endif
+//praccu
+static FrameCallback myFrames[] = {[this](OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y) -> void { locationsDisplayModule->drawFrame(display, state, x, y); }, };
+    ui->setFrames(myFrames, 1);
 
     // Process incoming commands.
     for (;;) {
