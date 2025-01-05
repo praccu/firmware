@@ -38,7 +38,6 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
     const auto& myPosition = myNode->position;
     if (compassModule == NULL) { display->drawString(16,16, "No compass"); return;}
     const auto& myBearing = compassModule->getBearing();
-    float myFakeBearing = 0.0;
     display->clear();
 
 
@@ -66,12 +65,11 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
         if ((int)(now - node.last_heard) < FRIEND_LIVENESS_TIME) {
 
             float bearingToFriend = GeoCoord::bearing(
-                DegD(423601000), DegD(-710589000),
-                //DegD(myPosition.latitude_i), DegD(myPosition.longitude_i), 
+                DegD(myPosition.latitude_i), DegD(myPosition.longitude_i), 
                 DegD(node.position.latitude_i), DegD(node.position.longitude_i)
                 );
 
-            bearingToFriend -= myFakeBearing;
+            bearingToFriend -= myBearing;
 
             // Find the appropriate point on the half compass
             bearing.rotate(-bearingToFriend);
@@ -80,8 +78,6 @@ void LocationsDisplayModule::drawFrame(OLEDDisplay *display, OLEDDisplayUiState 
 
             // Draw the first character of the friend's name.
             //display->drawString(bearing.x, bearing.y, String(name));//node.user.short_name[0]));
-            display->drawString(4+offset, 4, String(bearing.x));
-            display->drawString(4+offset, 12, String(bearing.y));
             display->drawString((int)bearing.x, (int)bearing.y, String(name));
             name++;
             offset += 30;

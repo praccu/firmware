@@ -16,6 +16,11 @@ CompassModule *compassModule;
 
 float CompassModule::getBearing() {
     runOnce();
+    Serial.print("Mag: ");
+    Serial.print(this->mag.magnetic.x); Serial.print(", ");
+    Serial.print(this->mag.magnetic.y); Serial.print(", ");
+    Serial.print(this->mag.magnetic.z); Serial.println("");
+    
     MadgwickQuaternionUpdate(
         this->accel.acceleration.x, this->accel.acceleration.y, this->accel.acceleration.z,
         this->gyro.gyro.x, this->gyro.gyro.y, this->gyro.gyro.z,
@@ -59,5 +64,6 @@ CompassModule::CompassModule(): OSThread("compass_module") {
 }
 
 void compassInit() {
+    Serial.begin(115200);
     compassModule = new CompassModule();
 }
